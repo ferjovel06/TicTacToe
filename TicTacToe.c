@@ -9,6 +9,10 @@ int tablero[3][3] = {
     {' ', ' ', ' '}
 };
 
+/* Menu
+ * Muestra el menu de seleccion de ficha
+ * y asigna las fichas a los jugadores
+ */
 void Menu() {
     printf("Bienvenido al juego de Tic Tac Toe\n");
     printf("1. X\n");
@@ -24,6 +28,10 @@ void Menu() {
     }
 }
 
+/* SortearTurnoInicial
+ * Sortea quien inicia el juego
+ * y asigna el jugador en turno
+ */
 void SortearTurnoInicial() {
     printf("Sorteando quien inicia el juego...\n");
     if (rand() % 2 == 0) {
@@ -35,6 +43,9 @@ void SortearTurnoInicial() {
     }
 }
 
+/* DibujarTablero
+ * Dibuja el tablero de juego
+ */
 void DibujarTablero() {
     printf(" %c | %c | %c\n", tablero[0][0], tablero[0][1], tablero[0][2]);
     printf("---|---|---\n");
@@ -43,6 +54,11 @@ void DibujarTablero() {
     printf(" %c | %c | %c\n", tablero[2][0], tablero[2][1], tablero[2][2]);
 }
 
+/* IngresaJugada
+ * Pide al jugador en turno que ingrese su jugada
+ * y verifica si la casilla esta ocupada
+ * y si la jugada es valida
+ */
 void IngresaJugada() {
     int fila, columna;
     printf("Jugador %c, ingresa tu jugada (fila y columna): ", jugadorEnTurno);
@@ -57,11 +73,17 @@ void IngresaJugada() {
         } else {
             jugadorEnTurno = jugador1;
         }
+    } else if (fila < 0 || fila > 2 || columna < 0 || columna > 2) {
+        printf("Jugada invalida\n");
     } else {
-        printf("La casilla ya esta ocupada\n");
+        printf("Casilla ocupada\n");
     }
 }
 
+/* VerificarGanador
+ * Verifica si hay un ganador
+ * o si hay un empate e imprime el resultado
+ */
 int VerificarGanador() {
     int i;
     for (i = 0; i < 3; i++) {
