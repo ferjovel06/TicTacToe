@@ -1,24 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TAMANO 3
+
 char jugador1, jugador2, jugadorEnTurno;
-int turnos, ganador = 0, eleccion;
-int tablero[3][3] = {
+int turnos, ganador = 0, eleccion, fila, columna;
+char tablero[TAMANO][TAMANO] = {
     {' ', ' ', ' '},
     {' ', ' ', ' '},
     {' ', ' ', ' '}
 };
+
+void Menu();
+void ElegirFicha(int eleccion);
+void SortearTurnoInicial();
+void DibujarTablero();
+void IngresaJugada();
+int VerificarGanador();
+int MostrarMesajeInicial();
+void ImprimirSaltoDeLinea();
+void ImprimirFilas(int i);
+void ImprimirColumnas(int j);
+void CambiarJugadorEnTurno();
+void ComprobarJugadaValida(int fila, int columna);
+void ComprobarTablero();
+
+int main() {
+
+    Menu();
+    SortearTurnoInicial();
+    while (ganador == 0) {
+        DibujarTablero();
+        IngresaJugada();
+        VerificarGanador();
+    }
+}
 
 /* Menu
  * Muestra el menu de seleccion de ficha
  * y asigna las fichas a los jugadores
  */
 void Menu() {
+    eleccion = MostrarMesajeInicial();
+    ElegirFicha(eleccion);
+}
+
+int MostrarMesajeInicial() {
     printf("Bienvenido al juego de Tic Tac Toe\n");
     printf("1. X\n");
     printf("2. O\n");
     printf("Ingresa tu eleccion: ");
     scanf("%d", &eleccion);
+    return eleccion;
+}
+
+void ElegirFicha(int eleccion) {
     if (eleccion == 1) {
         jugador1 = 'X';
         jugador2 = 'O';
@@ -47,11 +83,31 @@ void SortearTurnoInicial() {
  * Dibuja el tablero de juego
  */
 void DibujarTablero() {
-    printf(" %c | %c | %c\n", tablero[0][0], tablero[0][1], tablero[0][2]);
-    printf("---|---|---\n");
-    printf(" %c | %c | %c\n", tablero[1][0], tablero[1][1], tablero[1][2]);
-    printf("---|---|---\n");
-    printf(" %c | %c | %c\n", tablero[2][0], tablero[2][1], tablero[2][2]);
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            printf(" %c", tablero[i][j]);
+            ImprimirColumnas(j);
+        }
+        ImprimirFilas(i);
+
+    }
+    ImprimirSaltoDeLinea();
+}
+
+void ImprimirSaltoDeLinea() {
+    printf("\n");
+}
+
+void ImprimirFilas(int i) {
+    if(i < 2) {
+        printf("\n---|---|---\n");
+    }
+}
+
+void ImprimirColumnas(int j) {
+    if (j < 2) {
+        printf(" |");
+    }
 }
 
 /* IngresaJugada
@@ -65,14 +121,22 @@ void IngresaJugada() {
     scanf("%d %d", &fila, &columna);
     fila--;
     columna--;
+    ComprobarJugadaValida(fila, columna);
+}
+
+void CambiarJugadorEnTurno() {
+    if (jugadorEnTurno == jugador1) {
+        jugadorEnTurno = jugador2;
+    } else {
+        jugadorEnTurno = jugador1;
+    }
+}
+
+void ComprobarJugadaValida(int fila, int columna) {
     if (tablero[fila][columna] == ' ') {
         tablero[fila][columna] = jugadorEnTurno;
         turnos++;
-        if (jugadorEnTurno == jugador1) {
-            jugadorEnTurno = jugador2;
-        } else {
-            jugadorEnTurno = jugador1;
-        }
+        CambiarJugadorEnTurno();
     } else if (fila < 0 || fila > 2 || columna < 0 || columna > 2) {
         printf("Jugada invalida\n");
     } else {
@@ -85,6 +149,21 @@ void IngresaJugada() {
  * o si hay un empate e imprime el resultado
  */
 int VerificarGanador() {
+    ComprobarTablero();
+
+    if (ganador == 1) {
+        DibujarTablero();
+        printf("Hay un ganador\n");
+    }
+
+    if (turnos == 9 && ganador == 0) {
+        DibujarTablero();
+        printf("Empate\n");
+    }
+    return ganador;
+}
+
+void ComprobarTablero() {
     int i;
     for (i = 0; i < 3; i++) {
         if ((tablero[i][0] == tablero[i][1] && tablero[i][1] == tablero[i][2] && tablero[i][0] != ' ') ||
@@ -93,27 +172,5 @@ int VerificarGanador() {
             (tablero[0][2] == tablero[1][1] && tablero[1][1] == tablero[2][0] && tablero[0][2] != ' ')) {
             ganador = 1;
         }
-    }
-
-    if (ganador == 1) {
-        DibujarTablero();
-        printf("Hay un ganador\n");
-    }
-
-    if (turnos == 9) {
-        DibujarTablero();
-        printf("Empate\n");
-    }
-    return ganador;
-}
-
-int main() {
-
-    Menu();
-    SortearTurnoInicial();
-    while (ganador == 0) {
-        DibujarTablero();
-        IngresaJugada();
-        VerificarGanador();
     }
 }
